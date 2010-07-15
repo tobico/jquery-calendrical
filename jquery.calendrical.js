@@ -153,6 +153,41 @@
         element.empty().append(table);
     }
     
+    function renderTimeSelect(element, options)
+    {
+        var ul = $('<ul />');
+        for (var hour = 0; hour < 24; hour++) {
+            for (var minute = 0; minute < 60; minute += 30) {
+                var printHour = hour % 12;
+                if (printHour == 0) printHour = 12;
+                var printMinute = minute;
+                if (minute < 10) printMinute = '0' + minute;
+                var half = (hour < 12) ? 'am' : 'pm';
+                (function() {
+                    var timeText = printHour + ':' + printMinute + half;
+                    var li = $('<li />').append(
+                        $('<a href="javascript:;">' + timeText + '</a>')
+                        .click(function() {
+                            if (options && options.selectTime) {
+                                options.selectTime(timeText);
+                            }
+                        }).mousemove(function() {
+                            $('li.selected', ul).removeClass('selected');
+                        })
+                    ).appendTo(ul);
+                    if (options.selection && options.selection == timeText) {
+                        li.addClass('selected');
+                        setTimeout(function() {
+                            console.log(li[0]);
+                            element[0].scrollTop = li[0].offsetTop - li.height() * 2;
+                        }, 0)
+                    }
+                })();
+            }
+        }
+        element.empty().append(ul);
+    }
+    
     function formatDate(date, usa)
     {
         return (usa ?
@@ -197,6 +232,7 @@
                 element.after(div); 
                 
                 var selected = parseDate(element.val(), options.usa);
+                if (!selected.getFullYear()) selected = getToday();
                 
                 renderCalendarPage(
                     div,
@@ -210,6 +246,47 @@
                         }
                     }
                 );
+            }).blur(function() {
+                if (!div) return;
+                div.remove();
+                div = null;
+            });
+        });
+    }
+    
+    $.fn.calendricalTime = function(options)
+    {
+        options = options || {};
+        options.padding = options.padding || 4;
+        
+        return this.each(function() {
+            var element = $(this);
+            var div;
+            
+            element.bind('focus click', function() {
+                if (div) return;
+                var offset = element.offset();
+                div = $('<div />')
+                    .addClass('calendricalTimePopup')
+                    .mousedown(function(e) {
+                        e.preventDefault();
+                    })
+                    .css({
+                        position: 'absolute',
+                        left: offset.left,
+                        top: offset.top + element.height() +
+                            options.padding * 2
+                    });
+                element.after(div); 
+                
+                renderTimeSelect(div, {
+                    selection: element.val(),
+                    selectTime: function(time) {
+                        element.val(time);
+                        div.remove();
+                        div = null;
+                    }
+                });
             }).blur(function() {
                 if (!div) return;
                 div.remove();
