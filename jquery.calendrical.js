@@ -62,6 +62,53 @@
             new Date(year, month + 1, 1);
     }
     
+    function formatDate(date, usa)
+    {
+        return (usa ?
+            ((date.getMonth() + 1) + '/' + date.getDate()) :
+            (date.getDate() + '/' + (date.getMonth() + 1))
+        ) + '/' + date.getFullYear(); 
+    }
+    
+    function parseDate(date, usa)
+    {
+        if (usa) return new Date(date);
+        a = date.split(/[\.\-\/]/);
+        var day = a.shift();
+        var month = a.shift();
+        a.unshift(day);
+        a.unshift(month);
+        return new Date(a.join('/'));
+    }
+    
+    function formatTime(hour, minute)
+    {
+        var printHour = hour % 12;
+        if (printHour == 0) printHour = 12;
+        var printMinute = minute;
+        if (minute < 10) printMinute = '0' + minute;
+        var half = (hour < 12) ? 'am' : 'pm';
+        
+        return printHour + ':' + printMinute + half;
+    }
+    
+    function parseTime(text)
+    {
+        var match = match = /(\d+)\s*[:\-\.,]\s*(\d+)\s*(am|pm)?/i.exec(text);
+        if (match && match.length >= 3) {
+            var hour = Number(match[1]);
+            var minute = Number(match[2])
+            if (hour == 12 && match[3]) hour -= 12;
+            if (match[3] && match[3].toLowerCase() == 'pm') hour += 12;
+            return {
+                hour:   hour,
+                minute: minute
+            };
+        } else {
+            return null;
+        }
+    }
+    
     function renderCalendarPage(element, year, month, options)
     {
         options = options || {};
@@ -155,18 +202,33 @@
     
     function renderTimeSelect(element, options)
     {
+        var selection = options.selection && parseTime(options.selection);
+        if (selection) {
+            selection.minute = Math.floor(selection.minute / 30.0) * 30;
+        }
+        var startTime = options.startTime &&
+            (options.startTime.hour * 60 + options.startTime.minute);
+        
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
             for (var minute = 0; minute < 60; minute += 30) {
-                var printHour = hour % 12;
-                if (printHour == 0) printHour = 12;
-                var printMinute = minute;
-                if (minute < 10) printMinute = '0' + minute;
-                var half = (hour < 12) ? 'am' : 'pm';
+                if (startTime && startTime > (hour * 60 + minute)) continue;
+                
                 (function() {
-                    var timeText = printHour + ':' + printMinute + half;
+                    var timeText = formatTime(hour, minute);
+                    var fullText = timeText;
+                    if (startTime != null) {
+                        var duration = (hour * 60 + minute) - startTime;
+                        if (duration < 60) {
+                            fullText += ' (' + duration + ' mins)';
+                        } else if (duration == 60) {
+                            fullText += ' (1 hr)';
+                        } else {
+                            fullText += ' (' + (duration / 60.0) + ' hrs)';
+                        }
+                    }
                     var li = $('<li />').append(
-                        $('<a href="javascript:;">' + timeText + '</a>')
+                        $('<a href="javascript:;">' + fullText + '</a>')
                         .click(function() {
                             if (options && options.selectTime) {
                                 options.selectTime(timeText);
@@ -175,10 +237,12 @@
                             $('li.selected', ul).removeClass('selected');
                         })
                     ).appendTo(ul);
-                    if (options.selection && options.selection == timeText) {
+                    if (selection &&
+                        selection.hour == hour &&
+                        selection.minute == minute)
+                    {
                         li.addClass('selected');
                         setTimeout(function() {
-                            console.log(li[0]);
                             element[0].scrollTop = li[0].offsetTop - li.height() * 2;
                         }, 0)
                     }
@@ -188,28 +252,10 @@
         element.empty().append(ul);
     }
     
-    function formatDate(date, usa)
-    {
-        return (usa ?
-            ((date.getMonth() + 1) + '/' + date.getDate()) :
-            (date.getDate() + '/' + (date.getMonth() + 1))
-        ) + '/' + date.getFullYear(); 
-    }
-    
-    function parseDate(date, usa)
-    {
-        if (usa) return new Date(date);
-        a = date.split(/[\.-\/]/);
-        var day = a.shift();
-        var month = a.shift();
-        a.unshift(day);
-        a.unshift(month);
-        return new Date(a.join('/'));
-    }
-    
     $.fn.calendricalDate = function(options)
     {
         options = options || {};
+        options.padding = options.padding || 4;
         
         return this.each(function() {
             var element = $(this);
@@ -226,8 +272,9 @@
                     })
                     .css({
                         position: 'absolute',
-                        left: offset.left - padding,
-                        top: offset.top + element.height() + padding * 2
+                        left: offset.left,
+                        top: offset.top + element.height() +
+                            options.padding * 2
                     });
                 element.after(div); 
                 
@@ -252,7 +299,12 @@
                 div = null;
             });
         });
-    }
+    };
+    
+    $.fn.calendricalDateRange = function(options)
+    {
+        return this.calendricalDate(options)
+    };
     
     $.fn.calendricalTime = function(options)
     {
@@ -277,21 +329,41 @@
                         top: offset.top + element.height() +
                             options.padding * 2
                     });
+                if (options.startTime) {
+                    div.addClass('calendricalEndTimePopup');
+                }
+
                 element.after(div); 
                 
-                renderTimeSelect(div, {
+                var opts = {
                     selection: element.val(),
                     selectTime: function(time) {
                         element.val(time);
                         div.remove();
                         div = null;
                     }
-                });
+                };
+                if (options.startTime) {
+                    opts.startTime = parseTime(options.startTime.val());
+                }
+                
+                renderTimeSelect(div, opts);
             }).blur(function() {
                 if (!div) return;
                 div.remove();
                 div = null;
             });
         });
-    }
+    },
+    
+    $.fn.calendricalTimeRange = function(options)
+    {
+        if (this.length >= 2) {
+            $(this[0]).calendricalTime(options);
+            $(this[1]).calendricalTime($.extend({
+                startTime: $(this[0])
+            }, options));
+        }
+        return this;
+    };
 // })(jQuery);
