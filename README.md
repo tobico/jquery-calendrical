@@ -14,10 +14,11 @@ If you use SASS for your project, you can include the code in `calendrical.scss`
 
 You can add Calendrical date and time pickers to your existing text fields using the following functions:
 
-  * calendricalDate
-  * calendricalTime
-  * calendricalDateRange
-  * calendricalTimeRange
+  * .calendricalDate
+  * .calendricalTime
+  * .calendricalDateRange
+  * .calendricalTimeRange
+  * .calendricalDateTimeRange
   
 See `example.html` for examples of how to use these functions.
 
@@ -27,4 +28,4 @@ All of the Calendrical functions can accept an options hash as a parameter.
 
 Available options:
 
-  * _usa_: Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
+  * __usa__ - Set to `true` to use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).

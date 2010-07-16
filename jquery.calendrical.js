@@ -316,6 +316,15 @@
             
             element.bind('focus click', function() {
                 if (div) return;
+
+                var useStartTime = options.startTime;
+                if (useStartTime) {
+                    if (options.startDate && options.endDate &&
+                        !areDatesEqual(parseDate(options.startDate.val()),
+                            parseDate(options.endDate.val())))
+                        useStartTime = false;
+                }
+
                 var offset = element.offset();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
@@ -328,7 +337,7 @@
                         top: offset.top + element.height() +
                             options.padding * 2
                     });
-                if (options.startTime) {
+                if (useStartTime) {
                     div.addClass('calendricalEndTimePopup');
                 }
 
@@ -342,7 +351,8 @@
                         div = null;
                     }
                 };
-                if (options.startTime) {
+                
+                if (useStartTime) {
                     opts.startTime = parseTime(options.startTime.val());
                 }
                 
@@ -361,6 +371,21 @@
             $(this[0]).calendricalTime(options);
             $(this[1]).calendricalTime($.extend({
                 startTime: $(this[0])
+            }, options));
+        }
+        return this;
+    };
+
+    $.fn.calendricalDateTimeRange = function(options)
+    {
+        if (this.length >= 4) {
+            $(this[0]).calendricalDate(options);
+            $(this[1]).calendricalTime(options);
+            $(this[2]).calendricalDate(options);
+            $(this[3]).calendricalTime($.extend({
+                startTime: $(this[1]),
+                startDate: $(this[0]),
+                endDate:   $(this[2])
             }, options));
         }
         return this;

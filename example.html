@@ -11,7 +11,7 @@
                 text-align: center;
             }
             pre {
-                font: 12px Menlo, Consolas, Monaco, "DejaVu Sans Mono", Courier, "Courier New";
+                font: 11px Menlo, Consolas, Monaco, "DejaVu Sans Mono", Courier, "Courier New";
             }
             #wrapper {
                 width: 960px;
@@ -24,6 +24,10 @@
             }
             div.demo input {
                 width: 100px;
+            }
+            div.demo strong {
+                width: 40px;
+                display: inline-block;
             }
             div.demo, div.html, div.javascript {
                 float: left;
@@ -134,6 +138,51 @@ $(<font color="#008000">'#time_start, #time_end'</font>)
     .calendricalTimeRange()<font color="4444FF">;</font></pre>
                 </div>
             </section>
+            
+                        <section>
+                            <header>
+                                <h2>DateTime Range</h2>
+                            </header>
+
+                            <div class="demo">
+                                <p>
+                                    <strong>From:</strong>
+                                    <input id="dt_date_start" type="text" />
+                                    <input id="dt_time_start" type="text" />
+                                </p>
+                                <p>
+                                    <strong>To:</strong>
+                                    <input id="dt_date_end"   type="text" />
+                                    <input id="dt_time_end"   type="text" />
+                                </p>
+                                <script>
+                                    $(function() {
+                                        $('#dt_date_start, #dt_time_start,' +
+                                          '#dt_date_end,   #dt_time_end')
+                                              .calendricalDateTimeRange();
+                                    });
+                                </script>
+                            </div>
+
+                            <div class="html">
+                                <pre><font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">p</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">strong</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>From:<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">/strong</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"dt_date_start"</font> <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"dt_time_start"</font> <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">/p</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">p</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">strong</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>To:<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">/strong</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"dt_date_end"</font>   <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+    <font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">input</font> <font color="#2040a0">id=</font><font color="#008000">"dt_time_end"</font>   <font color="#2040a0">type=</font><font color="#008000">"text"</font> <font color="#2040a0">/</font><font color="4444FF"><strong>&gt;</strong></font></strong></font>
+<font color="#2040a0"><strong><font color="4444FF"><strong>&lt;</strong></font><font color="#2040a0">/p</font><font color="4444FF"><strong>&gt;</strong></font></strong></font></pre>
+                            </div>
+
+                            <div class="javascript">
+                                <pre>$(<font color="#008000">'#dt_date_start, #dt_time_start,'</font> +
+  <font color="#008000">'#dt_date_end,   #dt_time_end'</font>)
+    .calendricalDateTimeRange()<font color="4444FF">;</font></pre>
+                            </div>
+                        </section>
         </div>
     </body>
 </html>
