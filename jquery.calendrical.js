@@ -289,6 +289,20 @@
                             element.val(formatDate(date, options.usa));
                             div.remove();
                             div = null;
+                            if (options.endDate) {
+                                var endDate = parseDate(
+                                    options.endDate.val(), options.usa
+                                );
+                                if (endDate >= selected) {
+                                    options.endDate.val(formatDate(
+                                        new Date(
+                                            date.getTime() +
+                                            endDate.getTime() -
+                                            selected.getTime()
+                                        )
+                                    ));
+                                }
+                            }
                         }
                     }
                 );
@@ -302,7 +316,13 @@
     
     $.fn.calendricalDateRange = function(options)
     {
-        return this.calendricalDate(options)
+        if (this.length >= 2) {
+            $(this[0]).calendricalDate($.extend({
+                endDate:   $(this[1])
+            }, options));
+            $(this[1]).calendricalDate(options);
+        }
+        return this;
     };
     
     $.fn.calendricalTime = function(options)
@@ -379,7 +399,9 @@
     $.fn.calendricalDateTimeRange = function(options)
     {
         if (this.length >= 4) {
-            $(this[0]).calendricalDate(options);
+            $(this[0]).calendricalDate($.extend({
+                endDate:   $(this[2])
+            }, options));
             $(this[1]).calendricalTime(options);
             $(this[2]).calendricalDate(options);
             $(this[3]).calendricalTime($.extend({
