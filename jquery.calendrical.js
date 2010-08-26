@@ -259,6 +259,7 @@
         return this.each(function() {
             var element = $(this);
             var div;
+            var within = false;
             
             element.bind('focus click', function() {
                 if (div) return;
@@ -266,6 +267,8 @@
                 var padding = element.css('padding-left');
                 div = $('<div />')
                     .addClass('calendricalDatePopup')
+                    .mouseenter(function() { within = true; })
+                    .mouseleave(function() { within = false; })
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
@@ -307,6 +310,7 @@
                     }
                 );
             }).blur(function() {
+            	if (within) return;
                 if (!div) return;
                 div.remove();
                 div = null;
@@ -333,6 +337,7 @@
         return this.each(function() {
             var element = $(this);
             var div;
+            var within = false;
             
             element.bind('focus click', function() {
                 if (div) return;
@@ -348,6 +353,8 @@
                 var offset = element.position();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
+                    .mouseenter(function() { within = true; })
+                    .mouseleave(function() { within = false; })
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
@@ -378,6 +385,7 @@
                 
                 renderTimeSelect(div, opts);
             }).blur(function() {
+            	if (within) return;
                 if (!div) return;
                 div.remove();
                 div = null;
