@@ -262,7 +262,7 @@
             
             element.bind('focus click', function() {
                 if (div) return;
-                var offset = element.offset();
+                var offset = element.position();
                 var padding = element.css('padding-left');
                 div = $('<div />')
                     .addClass('calendricalDatePopup')
@@ -345,7 +345,7 @@
                         useStartTime = false;
                 }
 
-                var offset = element.offset();
+                var offset = element.position();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
                     .mousedown(function(e) {
