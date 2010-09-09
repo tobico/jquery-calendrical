@@ -125,7 +125,7 @@
         var table = $('<table />');
         var thead = $('<thead />').appendTo(table);
         $('<tr />').append(
-            $('<th />').addClass('monthCell').attr('colspan', 7).append(
+            $('<th />').addClass('monthCell').attr('colSpan', 7).append(
                 $('<a href="javascript:;">&laquo;</a>')
                     .addClass('prevMonth')
                     .mousedown(function(e) {
