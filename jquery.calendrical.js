@@ -298,6 +298,7 @@
                     selected.getMonth(), {
                         selected: selected,
                         selectDate: function(date) {
+                            within = false;
                             element.val(formatDate(date, options.usa));
                             div.remove();
                             div = null;
@@ -319,7 +320,10 @@
                     }
                 );
             }).blur(function() {
-            	if (within) return;
+                if (within){
+                    if (div) element.focus();
+                    return;
+                }
                 if (!div) return;
                 div.remove();
                 div = null;
@@ -382,6 +386,7 @@
                 var opts = {
                     selection: element.val(),
                     selectTime: function(time) {
+                        within = false;
                         element.val(time);
                         div.remove();
                         div = null;
@@ -394,7 +399,10 @@
                 
                 renderTimeSelect(div, opts);
             }).blur(function() {
-            	if (within) return;
+                if (within){
+                    if (div) element.focus();
+                    return;
+                }
                 if (!div) return;
                 div.remove();
                 div = null;
