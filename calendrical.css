@@ -19,6 +19,8 @@
         width: 110px; }
     .calendricalDatePopup table a {
       text-decoration: none; }
+    .calendricalDatePopup table th {
+      text-align: center; }
     .calendricalDatePopup table td {
       text-align: center;
       font-size: 12px;

@@ -124,29 +124,36 @@
         
         var table = $('<table />');
         var thead = $('<thead />').appendTo(table);
-        $('<tr />').append(
-            $('<th />').addClass('monthCell').attr('colSpan', 7).append(
-                $('<a href="javascript:;">&laquo;</a>')
-                    .addClass('prevMonth')
-                    .mousedown(function(e) {
-                        renderCalendarPage(element,
-                            month == 0 ? (year - 1) : year,
-                            month == 0 ? 11 : (month - 1), options
-                        );
-                        e.preventDefault();
-                    }),
-                $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
-                    date.getFullYear() + '</a>').addClass('monthName'),
-                $('<a href="javascript:;">&raquo;</a>')
-                    .addClass('nextMonth')
-                    .mousedown(function() {
-                        renderCalendarPage(element,
-                            month == 11 ? (year + 1) : year,
-                            month == 11 ? 0 : (month + 1), options
-                        );
-                    })
-            )
-        ).appendTo(thead);
+        var monthControls = $('<tr />').appendTo(thead);
+        
+        $('<th />').addClass('monthCell').append(
+          $('<a href="javascript:;">&laquo;</a>')
+                  .addClass('prevMonth')
+                  .mousedown(function(e) {
+                      renderCalendarPage(element,
+                          month == 0 ? (year - 1) : year,
+                          month == 0 ? 11 : (month - 1), options
+                      );
+                      e.preventDefault();
+                  })
+        ).appendTo(monthControls);
+        
+        $('<th />').addClass('monthCell').attr('colSpan', 5).append(
+            $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
+                date.getFullYear() + '</a>').addClass('monthName')
+        ).appendTo(monthControls);
+        
+        $('<th />').addClass('monthCell').append(
+            $('<a href="javascript:;">&raquo;</a>')
+                .addClass('nextMonth')
+                .mousedown(function() {
+                    renderCalendarPage(element,
+                        month == 11 ? (year + 1) : year,
+                        month == 11 ? 0 : (month + 1), options
+                    );
+                })
+        ).appendTo(monthControls);
+        
         var dayNames = $('<tr />').appendTo(thead);
         $.each(String('SMTWTFS').split(''), function(k, v) {
             $('<td />').addClass('dayName').append(v).appendTo(dayNames);
