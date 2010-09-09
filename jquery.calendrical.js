@@ -124,26 +124,28 @@
         
         var table = $('<table />');
         var thead = $('<thead />').appendTo(table);
-        $('<th />').addClass('monthCell').attr('colspan', 7).append(
-            $('<a href="javascript:;">&laquo;</a>')
-                .addClass('prevMonth')
-                .mousedown(function(e) {
-                    renderCalendarPage(element,
-                        month == 0 ? (year - 1) : year,
-                        month == 0 ? 11 : (month - 1), options
-                    );
-                    e.preventDefault();
-                }),
-            $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
-                date.getFullYear() + '</a>').addClass('monthName'),
-            $('<a href="javascript:;">&raquo;</a>')
-                .addClass('nextMonth')
-                .mousedown(function() {
-                    renderCalendarPage(element,
-                        month == 11 ? (year + 1) : year,
-                        month == 11 ? 0 : (month + 1), options
-                    );
-                })
+        $('<tr />').append(
+            $('<th />').addClass('monthCell').attr('colspan', 7).append(
+                $('<a href="javascript:;">&laquo;</a>')
+                    .addClass('prevMonth')
+                    .mousedown(function(e) {
+                        renderCalendarPage(element,
+                            month == 0 ? (year - 1) : year,
+                            month == 0 ? 11 : (month - 1), options
+                        );
+                        e.preventDefault();
+                    }),
+                $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
+                    date.getFullYear() + '</a>').addClass('monthName'),
+                $('<a href="javascript:;">&raquo;</a>')
+                    .addClass('nextMonth')
+                    .mousedown(function() {
+                        renderCalendarPage(element,
+                            month == 11 ? (year + 1) : year,
+                            month == 11 ? 0 : (month + 1), options
+                        );
+                    })
+            )
         ).appendTo(thead);
         var dayNames = $('<tr />').appendTo(thead);
         $.each(String('SMTWTFS').split(''), function(k, v) {
