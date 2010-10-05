@@ -28,4 +28,5 @@ All of the Calendrical functions can accept an options hash as a parameter.
 
 Available options:
 
-  * __usa__ - Set to `true` to use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
+  * __usa__ - Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
+  * __isoTime__ - Use 24-hour clock (ISO 8601) instead of default 12 hour clock with am/pm.

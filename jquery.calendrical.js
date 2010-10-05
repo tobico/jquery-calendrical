@@ -80,15 +80,21 @@
         return new Date(a.join('/'));
     }
     
-    function formatTime(hour, minute)
+    function formatTime(hour, minute, iso)
     {
-        var printHour = hour % 12;
-        if (printHour == 0) printHour = 12;
         var printMinute = minute;
         if (minute < 10) printMinute = '0' + minute;
-        var half = (hour < 12) ? 'am' : 'pm';
-        
-        return printHour + ':' + printMinute + half;
+
+        if (iso) {
+            var printHour = hour
+            if (printHour < 10) printHour = '0' + hour;
+            return printHour + ':' + printMinute;
+        } else {
+            var printHour = hour % 12;
+            if (printHour == 0) printHour = 12;
+            var half = (hour < 12) ? 'am' : 'pm';
+            return printHour + ':' + printMinute + half;
+        }
     }
     
     function parseTime(text)
@@ -240,7 +246,7 @@
                 if (startTime && startTime > (hour * 60 + minute)) continue;
                 
                 (function() {
-                    var timeText = formatTime(hour, minute);
+                    var timeText = formatTime(hour, minute, options.isoTime);
                     var fullText = timeText;
                     if (startTime != null) {
                         var duration = (hour * 60 + minute) - startTime;
@@ -407,7 +413,8 @@
                         element.val(time);
                         div.remove();
                         div = null;
-                    }
+                    },
+                    isoTime: options.isoTime || false
                 };
                 
                 if (useStartTime) {
