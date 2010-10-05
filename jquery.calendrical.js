@@ -108,6 +108,56 @@
         }
     }
     
+    /**
+     * Generates calendar header, with month name, << and >> controls, and
+     * initials for days of the week.
+     */
+    function renderCalendarHeader(element, year, month, options)
+    {
+        //Prepare thead element
+        var thead = $('<thead />');
+        var titleRow = $('<tr />').appendTo(thead);
+        
+        //Generate << (back a month) link
+        $('<th />').addClass('monthCell').append(
+          $('<a href="javascript:;">&laquo;</a>')
+                  .addClass('prevMonth')
+                  .mousedown(function(e) {
+                      renderCalendarPage(element,
+                          month == 0 ? (year - 1) : year,
+                          month == 0 ? 11 : (month - 1), options
+                      );
+                      e.preventDefault();
+                  })
+        ).appendTo(titleRow);
+        
+        //Generate month title
+        $('<th />').addClass('monthCell').attr('colSpan', 5).append(
+            $('<a href="javascript:;">' + monthNames[month] + ' ' +
+                year + '</a>').addClass('monthName')
+        ).appendTo(titleRow);
+        
+        //Generate >> (forward a month) link
+        $('<th />').addClass('monthCell').append(
+            $('<a href="javascript:;">&raquo;</a>')
+                .addClass('nextMonth')
+                .mousedown(function() {
+                    renderCalendarPage(element,
+                        month == 11 ? (year + 1) : year,
+                        month == 11 ? 0 : (month + 1), options
+                    );
+                })
+        ).appendTo(titleRow);
+        
+        //Generate weekday initials row
+        var dayNames = $('<tr />').appendTo(thead);
+        $.each(String('SMTWTFS').split(''), function(k, v) {
+            $('<td />').addClass('dayName').append(v).appendTo(dayNames);
+        });
+        
+        return thead;
+    }
+    
     function renderCalendarPage(element, year, month, options)
     {
         options = options || {};
@@ -123,41 +173,8 @@
         for (var i = 0; i < ff; i++) endDate = dayAfter(endDate);
         
         var table = $('<table />');
-        var thead = $('<thead />').appendTo(table);
-        var monthControls = $('<tr />').appendTo(thead);
+        renderCalendarHeader(element, year, month, options).appendTo(table);
         
-        $('<th />').addClass('monthCell').append(
-          $('<a href="javascript:;">&laquo;</a>')
-                  .addClass('prevMonth')
-                  .mousedown(function(e) {
-                      renderCalendarPage(element,
-                          month == 0 ? (year - 1) : year,
-                          month == 0 ? 11 : (month - 1), options
-                      );
-                      e.preventDefault();
-                  })
-        ).appendTo(monthControls);
-        
-        $('<th />').addClass('monthCell').attr('colSpan', 5).append(
-            $('<a href="javascript:;">' + monthNames[date.getMonth()] + ' ' +
-                date.getFullYear() + '</a>').addClass('monthName')
-        ).appendTo(monthControls);
-        
-        $('<th />').addClass('monthCell').append(
-            $('<a href="javascript:;">&raquo;</a>')
-                .addClass('nextMonth')
-                .mousedown(function() {
-                    renderCalendarPage(element,
-                        month == 11 ? (year + 1) : year,
-                        month == 11 ? 0 : (month + 1), options
-                    );
-                })
-        ).appendTo(monthControls);
-        
-        var dayNames = $('<tr />').appendTo(thead);
-        $.each(String('SMTWTFS').split(''), function(k, v) {
-            $('<td />').addClass('dayName').append(v).appendTo(dayNames);
-        });
         var tbody = $('<tbody />').appendTo(table);
         var row = $('<tr />');
 
