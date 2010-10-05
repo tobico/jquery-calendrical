@@ -30,3 +30,5 @@ Available options:
 
   * __usa__ - Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
   * __isoTime__ - Use 24-hour clock (ISO 8601) instead of default 12 hour clock with am/pm.
+  * __defaultHour__ - Default hour to scroll the dropdown time select box to,
+  if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.

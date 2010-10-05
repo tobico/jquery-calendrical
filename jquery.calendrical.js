@@ -240,6 +240,7 @@
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
         
+        var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
             for (var minute = 0; minute < 60; minute += 30) {
@@ -268,17 +269,39 @@
                             $('li.selected', ul).removeClass('selected');
                         })
                     ).appendTo(ul);
+                    
+                    //Set to scroll to the default hour, unless already set
+                    if (!scrollTo && hour == options.defaultHour) {
+                        scrollTo = li;
+                    }
+                    
                     if (selection &&
                         selection.hour == hour &&
                         selection.minute == minute)
                     {
+                        //Highlight selected item
                         li.addClass('selected');
-                        setTimeout(function() {
-                            element[0].scrollTop = li[0].offsetTop - li.height() * 2;
-                        }, 0)
+                        
+                        //Set to scroll to the selected hour
+                        //
+                        //This is set even if scrollTo is already set, since
+                        //scrolling to selected hour is more important than
+                        //scrolling to default hour
+                        scrollTo = li;
                     }
                 })();
             }
+        }
+        if (scrollTo) {
+            //Set timeout of zero so code runs immediately after any calling
+            //functions are finished (this is needed, since box hasn't been
+            //added to the DOM yet)
+            setTimeout(function() {
+                //Scroll the dropdown box so that scrollTo item is in
+                //the middle
+                element[0].scrollTop =
+                    scrollTo[0].offsetTop - scrollTo.height() * 2;
+            }, 0);
         }
         element.empty().append(ul);
     }
@@ -414,7 +437,9 @@
                         div.remove();
                         div = null;
                     },
-                    isoTime: options.isoTime || false
+                    isoTime: options.isoTime || false,
+                    defaultHour: (options.defaultHour != null) ?
+                                    options.defaultHour : 8
                 };
                 
                 if (useStartTime) {
