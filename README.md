@@ -30,5 +30,7 @@ Available options:
 
   * __usa__ - Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
   * __isoTime__ - Use 24-hour clock (ISO 8601) instead of default 12 hour clock with am/pm.
+  * __meridiemUpperCase__ - Use upper case meridiem (AM/PM) instead of am/pm
+  * __endTime__ - the end time. Default to 23:30pm. endTime: {hour: 23, minute: 30}. It's possible to use endTime: {hour: 24, minute: 00}, which will be converted to 23:59 PM
   * __defaultHour__ - Default hour to scroll the dropdown time select box to,
   if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.

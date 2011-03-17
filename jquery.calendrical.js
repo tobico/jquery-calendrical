@@ -80,19 +80,25 @@
         return new Date(a.join('/'));
     }
     
-    function formatTime(hour, minute, iso)
+    function formatTime(hour, minute, opts)
     {
         var printMinute = minute;
         if (minute < 10) printMinute = '0' + minute;
 
-        if (iso) {
+        if (opts.isoTime) {
             var printHour = hour
             if (printHour < 10) printHour = '0' + hour;
             return printHour + ':' + printMinute;
         } else {
             var printHour = hour % 12;
             if (printHour == 0) printHour = 12;
-            var half = (hour < 12) ? 'am' : 'pm';
+
+            if (opts.meridiemUpperCase) {
+            	 var half = (hour < 12) ? 'AM' : 'PM';
+            } else {
+            	 var half = (hour < 12) ? 'am' : 'pm';
+            }
+           
             return printHour + ':' + printMinute + half;
         }
     }
@@ -235,28 +241,43 @@
     {
         var selection = options.selection && parseTime(options.selection);
         if (selection) {
-            selection.minute = Math.floor(selection.minute / 30.0) * 30;
+        	if (selection.minute==59 && selection.hour==23) {
+        		selection.minute = 59;
+        	} else {
+            	selection.minute = Math.floor(selection.minute / 30.0) * 30;
+        	}
         }
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
         
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
-        for (var hour = 0; hour < 24; hour++) {
+        for (var hour = 0; hour <= options.endTime.hour; hour++) {
             for (var minute = 0; minute < 60; minute += 30) {
-                if (startTime && startTime > (hour * 60 + minute)) continue;
+            	if (hour>=options.endTime.hour && minute>options.endTime.minute) break;
+            	
+            	var hourValue = hour;
+            	var minuteValue = minute;
+            	
+            	// midnight is an issue..
+            	if (hour == 24 && minute == 0) {
+            		hourValue = 23;
+            		minuteValue = 59;
+            	}
+            	
+                if (startTime && startTime > (hourValue * 60 + minuteValue)) continue;
                 
                 (function() {
-                    var timeText = formatTime(hour, minute, options.isoTime);
+                    var timeText = formatTime(hourValue, minuteValue, options);
                     var fullText = timeText;
                     if (startTime != null) {
-                        var duration = (hour * 60 + minute) - startTime;
+                        var duration = (hourValue * 60 + minuteValue) - startTime;
                         if (duration < 60) {
                             fullText += ' (' + duration + ' mins)';
                         } else if (duration == 60) {
                             fullText += ' (1 hr)';
                         } else {
-                            fullText += ' (' + (duration / 60.0) + ' hrs)';
+                            fullText += ' (' + Math.round((duration / 60.0)*10)/10 + ' hrs)';
                         }
                     }
                     var li = $('<li />').append(
@@ -271,13 +292,13 @@
                     ).appendTo(ul);
                     
                     //Set to scroll to the default hour, unless already set
-                    if (!scrollTo && hour == options.defaultHour) {
+                    if (!scrollTo && hourValue == options.defaultHour) {
                         scrollTo = li;
                     }
                     
                     if (selection &&
-                        selection.hour == hour &&
-                        selection.minute == minute)
+                        selection.hour == hourValue &&
+                        selection.minute == minuteValue)
                     {
                         //Highlight selected item
                         li.addClass('selected');
@@ -439,8 +460,10 @@
                         div = null;
                     },
                     isoTime: options.isoTime || false,
+                    meridiemUpperCase: options.meridiemUpperCase || false,
                     defaultHour: (options.defaultHour != null) ?
-                                    options.defaultHour : 8
+                                    options.defaultHour : 8,
+                    endTime: (options.endTime != null) ? options.endTime : {hour: 23, minute: 30 }
                 };
                 
                 if (useStartTime) {
