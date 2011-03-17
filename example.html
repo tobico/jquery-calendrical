@@ -121,7 +121,7 @@ $(<font color="#008000">'#date_start, #date_end'</font>)
                     <script>
                         $(function() {
                             $('#time_start, #time_end')
-                                .calendricalTimeRange(); 
+                                .calendricalTimeRange({meridiemUpperCase: true, endTime: {hour: 24, minute: 00}}); 
                         });
                     </script>
                 </div>
@@ -135,7 +135,10 @@ $(<font color="#008000">'#date_start, #date_end'</font>)
                 <div class="javascript">
                     <pre>
 $(<font color="#008000">'#time_start, #time_end'</font>)
-    .calendricalTimeRange()<font color="4444FF">;</font></pre>
+    .calendricalTimeRange({
+   		meridiemUpperCase: true, 
+  		endTime: {hour: 24, minute: 00}
+    })<font color="4444FF">;</font></pre>
                 </div>
             </section>
             
@@ -159,7 +162,7 @@ $(<font color="#008000">'#time_start, #time_end'</font>)
                                     $(function() {
                                         $('#dt_date_start, #dt_time_start,' +
                                           '#dt_date_end,   #dt_time_end')
-                                              .calendricalDateTimeRange();
+                                              .calendricalDateTimeRange({endTime: {hour: 24, minute: 00}});
                                     });
                                 </script>
                             </div>
@@ -180,7 +183,9 @@ $(<font color="#008000">'#time_start, #time_end'</font>)
                             <div class="javascript">
                                 <pre>$(<font color="#008000">'#dt_date_start, #dt_time_start,'</font> +
   <font color="#008000">'#dt_date_end,   #dt_time_end'</font>)
-    .calendricalDateTimeRange()<font color="4444FF">;</font></pre>
+    .calendricalDateTimeRange({
+    	{endTime: {hour: 24, minute: 00}
+    })<font color="4444FF">;</font></pre>
                             </div>
                         </section>
         </div>
