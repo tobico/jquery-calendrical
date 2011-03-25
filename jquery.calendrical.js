@@ -235,7 +235,7 @@
     {
         var selection = options.selection && parseTime(options.selection);
         if (selection) {
-            selection.minute = Math.floor(selection.minute / 30.0) * 30;
+            selection.minute = Math.floor(selection.minute / parseFloat(options.increment)) * options.increment;
         }
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
@@ -243,7 +243,7 @@
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
-            for (var minute = 0; minute < 60; minute += 30) {
+            for (var minute = 0; minute < 60; minute += options.increment) {
                 if (startTime && startTime > (hour * 60 + minute)) continue;
                 
                 (function() {
@@ -392,6 +392,7 @@
     $.fn.calendricalTime = function(options)
     {
         options = options || {};
+        options.increment = options.increment || 30;
         options.padding = options.padding || 4;
         
         return this.each(function() {
@@ -431,6 +432,7 @@
                 element.after(div); 
                 
                 var opts = {
+                    increment: options.increment,
                     selection: element.val(),
                     selectTime: function(time) {
                         within = false;
@@ -441,7 +443,7 @@
                     isoTime: options.isoTime || false,
                     defaultHour: (options.defaultHour != null) ?
                                     options.defaultHour : 8
-                };
+                }
                 
                 if (useStartTime) {
                     opts.startTime = parseTime(options.startTime.val());
