@@ -235,7 +235,7 @@
     {
         var selection = options.selection && parseTime(options.selection);
         if (selection) {
-            selection.minute = Math.floor(selection.minute / parseFloat(options.increment)) * options.increment;
+            selection.minute = Math.floor(selection.minute / parseFloat(options.timeInterval)) * options.timeInterval;
         }
         var startTime = options.startTime &&
             (options.startTime.hour * 60 + options.startTime.minute);
@@ -243,7 +243,7 @@
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
         for (var hour = 0; hour < 24; hour++) {
-            for (var minute = 0; minute < 60; minute += options.increment) {
+            for (var minute = 0; minute < 60; minute += options.timeInterval) {
                 if (startTime && startTime > (hour * 60 + minute)) continue;
                 
                 (function() {
@@ -256,7 +256,8 @@
                         } else if (duration == 60) {
                             fullText += ' (1 hr)';
                         } else {
-                            fullText += ' (' + (duration / 60.0) + ' hrs)';
+                            //Round partial hours to 1 decimal place
+                            fullText += ' (' + (Math.round(duration / 60.0 * 10.0) / 10.0) + ' hrs)';
                         }
                     }
                     var li = $('<li />').append(
@@ -392,7 +393,7 @@
     $.fn.calendricalTime = function(options)
     {
         options = options || {};
-        options.increment = options.increment || 30;
+        options.timeInterval = options.timeInterval || 30;
         options.padding = options.padding || 4;
         
         return this.each(function() {
@@ -432,7 +433,7 @@
                 element.after(div); 
                 
                 var opts = {
-                    increment: options.increment,
+                    timeInterval: options.timeInterval,
                     selection: element.val(),
                     selectTime: function(time) {
                         within = false;

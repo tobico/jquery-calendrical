@@ -32,3 +32,4 @@ Available options:
   * __isoTime__ - Use 24-hour clock (ISO 8601) instead of default 12 hour clock with am/pm.
   * __defaultHour__ - Default hour to scroll the dropdown time select box to,
   if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.
+  * __timeInterval__ - Interval in minutes between each option in a time picker. Default: 30
