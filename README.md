@@ -26,10 +26,18 @@ See `example.html` for examples of how to use these functions.
 
 All of the Calendrical functions can accept an options hash as a parameter.
 
-Available options:
+Date options:
 
   * __usa__ - Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
+
+Time options:
+
+*Time values are parsed as an object with an hour and minute - example: `{hour: 15, minute: 30}`*
+
   * __isoTime__ - Use 24-hour clock (ISO 8601) instead of default 12 hour clock with am/pm.
-  * __defaultHour__ - Default hour to scroll the dropdown time select box to,
-  if the field doesn't already have a time value when it's shown. Specify as an integer (0..23). Defaults to 9.
+  * __meridiemUpperCase__ - Use upper case meridiem (AM/PM) instead of am/pm
+  * __defaultTime__ - Default time to scroll the dropdown time select box to,
+  if the field doesn't already have a time value when it's shown
   * __timeInterval__ - Interval in minutes between each option in a time picker. Default: 30
+  * __minTime__ - The earliest time selectable. This is also the base value when calculating increments, e.g. a start time of {hour: 9, minute: 15} with the default interval of 30 will give the options (9:15, 9:45, 10:15, ...)
+  * __maxTime__ - The latest time selectable. If this value does not fall on a valid interval, the last interval before this one will be the latest time selectable (i.e. {hour: 11, minute: 34} becomes 11:30)

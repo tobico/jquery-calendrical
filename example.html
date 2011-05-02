@@ -133,7 +133,9 @@
             usa: true
         });
         $('#time_custom').calendricalTime({
-            defaultHour:  10,
+            defaultTime:  {hour: 10, minute: 30},
+            minTime: {hour: 9, minute: 10},
+            maxTime: {hour: 15, minute: 45},
             timeInterval: 20
         });
     });
