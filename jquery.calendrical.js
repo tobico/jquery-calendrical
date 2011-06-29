@@ -437,6 +437,7 @@
                     selectTime: function(time) {
                         within = false;
                         element.val(time);
+                        element.change();
                         div.remove();
                         div = null;
                     },
