@@ -61,15 +61,16 @@
             new Date(year, month + 1, 1);
     }
     
-    function formatDate(date, usa)
+    function formatDate(date, usa, separator)
     {
+        separator = (separator || '/');
         return (usa ?
-            ((date.getMonth() + 1) + '/' + date.getDate()) :
-            (date.getDate() + '/' + (date.getMonth() + 1))
-        ) + '/' + date.getFullYear(); 
+            ((date.getMonth() + 1) + separator + date.getDate()) :
+            (date.getDate() + separator + (date.getMonth() + 1))
+        ) + separator + date.getFullYear(); 
     }
     
-    function parseDate(date, usa)
+    function parseDate(date, usa, separator)
     {
         if (usa) return new Date(date);
         a = date.split(/[\.\-\/]/);
@@ -77,7 +78,8 @@
         var month = a.shift();
         a.unshift(day);
         a.unshift(month);
-        return new Date(a.join('/'));
+        separator = (separator || '/');
+        return new Date(a.join(separator));
     }
     
     function formatTime(hour, minute, options)
@@ -347,7 +349,7 @@
                     });
                 element.after(div); 
                 
-                var selected = parseDate(element.val(), options.usa);
+                var selected = parseDate(element.val(), options.usa, options.separator);
                 if (!selected.getFullYear()) selected = getToday();
                 
                 renderCalendarPage(
@@ -357,12 +359,12 @@
                         selected: selected,
                         selectDate: function(date) {
                             within = false;
-                            element.val(formatDate(date, options.usa));
+                            element.val(formatDate(date, options.usa, options.separator));
                             div.remove();
                             div = null;
                             if (options.endDate) {
                                 var endDate = parseDate(
-                                    options.endDate.val(), options.usa
+                                    options.endDate.val(), options.usa, options.separator
                                 );
                                 if (endDate >= selected) {
                                     options.endDate.val(formatDate(
@@ -371,7 +373,8 @@
                                             endDate.getTime() -
                                             selected.getTime()
                                         ),
-                                        options.usa
+                                        options.usa,
+                                        options.separator
                                     ));
                                 }
                             }
