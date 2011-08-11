@@ -61,12 +61,23 @@
             new Date(year, month + 1, 1);
     }
     
-    function formatDate(date, usa)
+    function formatDate(date, usa, two_digit_mdh)
     {
+	var month = date.getMonth() + 1;
+	var day = date.getDate();
+	if (two_digit_mdh){
+
+	    if (month < 10){
+		month = "0" + month;
+	    }
+	    if (day < 10){
+		day = "0" + day;
+	    }
+	}
         return (usa ?
-            ((date.getMonth() + 1) + '/' + date.getDate()) :
-            (date.getDate() + '/' + (date.getMonth() + 1))
-        ) + '/' + date.getFullYear(); 
+		(month + '/' + day) :
+		(day + '/' + month)
+		) + '/' + date.getFullYear(); 
     }
     
     function parseDate(date, usa)
@@ -92,7 +103,7 @@
         } else {
             var printHour = hour % 12;
             if (printHour == 0) printHour = 12;
-
+	    if (options.two_digit_mdh && printHour < 10) printHour = '0' + hour;
             if (options.meridiemUpperCase) {
             	 var half = (hour < 12) ? 'AM' : 'PM';
             } else {
@@ -357,7 +368,7 @@
                         selected: selected,
                         selectDate: function(date) {
                             within = false;
-                            element.val(formatDate(date, options.usa));
+                            element.val(formatDate(date, options.usa, options.two_digit_mdh));
                             div.remove();
                             div = null;
                             if (options.endDate) {
@@ -371,7 +382,7 @@
                                             endDate.getTime() -
                                             selected.getTime()
                                         ),
-                                        options.usa
+                                        options.usa, options.two_digit_mdh
                                     ));
                                 }
                             }
@@ -445,7 +456,8 @@
                     defaultTime:    options.defaultTime || {hour: 8, minute: 0},
                     minTime:        options.minTime || {hour: 0, minute: 0},
                     maxTime:        options.maxTime || {hour: 23, minute: 59},
-                    timeInterval:   options.timeInterval || 30
+                    timeInterval:   options.timeInterval || 30, 
+		    two_digit_mdh:  options.two_digit_mdh || false
                 };
                 
                 if (options.startTime) {
