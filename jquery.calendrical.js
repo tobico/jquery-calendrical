@@ -460,6 +460,7 @@
                     }
                     if (startTime) {
                         renderOptions.minTime = startTime;
+                        renderOptions.defaultTime = startTime;
                         renderOptions.showDuration = true;
                         div.addClass('calendricalEndTimePopup');
                     }
