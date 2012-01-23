@@ -80,19 +80,25 @@
         return new Date(a.join('/'));
     }
     
-    function formatTime(hour, minute, iso)
+    function formatTime(hour, minute, options)
     {
         var printMinute = minute;
         if (minute < 10) printMinute = '0' + minute;
 
-        if (iso) {
+        if (options.isoTime) {
             var printHour = hour
             if (printHour < 10) printHour = '0' + hour;
             return printHour + ':' + printMinute;
         } else {
             var printHour = hour % 12;
             if (printHour == 0) printHour = 12;
-            var half = (hour < 12) ? 'am' : 'pm';
+
+            if (options.meridiemUpperCase) {
+            	 var half = (hour < 12) ? 'AM' : 'PM';
+            } else {
+            	 var half = (hour < 12) ? 'am' : 'pm';
+            }
+           
             return printHour + ':' + printMinute + half;
         }
     }
@@ -112,6 +118,11 @@
         } else {
             return null;
         }
+    }
+    
+    function timeToMinutes(time)
+    {
+        return time && (time.hour * 60 + time.minute);
     }
     
     /**
@@ -233,65 +244,65 @@
     
     function renderTimeSelect(element, options)
     {
-        var selection = options.selection && parseTime(options.selection);
-        if (selection) {
-            selection.minute = Math.floor(selection.minute / parseFloat(options.timeInterval)) * options.timeInterval;
-        }
-        var startTime = options.startTime &&
-            (options.startTime.hour * 60 + options.startTime.minute);
+        var minTime = timeToMinutes(options.minTime);
+        var maxTime = timeToMinutes(options.maxTime);
+        var defaultTime = timeToMinutes(options.defaultTime);
+        var selection = options.selection && timeToMinutes(parseTime(options.selection));
+        
+        //Round selection to nearest time interval so that it matches a list item
+        selection = selection && (
+            (
+                Math.floor((selection - minTime) / options.timeInterval) *
+                options.timeInterval
+            ) + minTime
+        );
         
         var scrollTo;   //Element to scroll the dropdown box to when shown
         var ul = $('<ul />');
-        for (var hour = 0; hour < 24; hour++) {
-            for (var minute = 0; minute < 60; minute += options.timeInterval) {
-                if (startTime && startTime > (hour * 60 + minute)) continue;
-                
-                (function() {
-                    var timeText = formatTime(hour, minute, options.isoTime);
-                    var fullText = timeText;
-                    if (startTime != null) {
-                        var duration = (hour * 60 + minute) - startTime;
-                        if (duration < 60) {
-                            fullText += ' (' + duration + ' mins)';
-                        } else if (duration == 60) {
-                            fullText += ' (1 hr)';
-                        } else {
-                            //Round partial hours to 1 decimal place
-                            fullText += ' (' + (Math.round(duration / 60.0 * 10.0) / 10.0) + ' hrs)';
+        
+        for (var time = minTime; time <= maxTime; time += options.timeInterval)  {
+            (function(time) {
+            	var hour = Math.floor(time / 60);
+            	var minute = time % 60;
+                var timeText = formatTime(hour, minute, options);
+                var fullText = timeText;
+                if (options.showDuration) {
+                    var duration = time - minTime;
+                    if (duration < 60) {
+                        fullText += ' (' + duration + ' mins)';
+                    } else if (duration == 60) {
+                        fullText += ' (1 hr)';
+                    } else {
+                        //Round partial hours to 1 decimal place
+                        fullText += ' (' + (Math.round(duration / 60.0 * 10.0) / 10.0) + ' hrs)';
+                    }
+                }
+                var li = $('<li />').append(
+                    $('<a href="javascript:;">' + fullText + '</a>')
+                    .click(function() {
+                        if (options && options.selectTime) {
+                            options.selectTime(timeText);
                         }
-                    }
-                    var li = $('<li />').append(
-                        $('<a href="javascript:;">' + fullText + '</a>')
-                        .click(function() {
-                            if (options && options.selectTime) {
-                                options.selectTime(timeText);
-                            }
-                        }).mousemove(function() {
-                            $('li.selected', ul).removeClass('selected');
-                        })
-                    ).appendTo(ul);
+                    }).mousemove(function() {
+                        $('li.selected', ul).removeClass('selected');
+                    })
+                ).appendTo(ul);
+                
+                //Set to scroll to the default hour, unless already set
+                if (!scrollTo && time == defaultTime) scrollTo = li;
+                
+                if (selection == time) {
+                    //Highlight selected item
+                    li.addClass('selected');
                     
-                    //Set to scroll to the default hour, unless already set
-                    if (!scrollTo && hour == options.defaultHour) {
-                        scrollTo = li;
-                    }
-                    
-                    if (selection &&
-                        selection.hour == hour &&
-                        selection.minute == minute)
-                    {
-                        //Highlight selected item
-                        li.addClass('selected');
-                        
-                        //Set to scroll to the selected hour
-                        //
-                        //This is set even if scrollTo is already set, since
-                        //scrolling to selected hour is more important than
-                        //scrolling to default hour
-                        scrollTo = li;
-                    }
-                })();
-            }
+                    //Set to scroll to the selected hour
+                    //
+                    //This is set even if scrollTo is already set, since
+                    //scrolling to selected hour is more important than
+                    //scrolling to default hour
+                    scrollTo = li;
+                }
+            })(time);
         }
         if (scrollTo) {
             //Set timeout of zero so code runs immediately after any calling
@@ -404,14 +415,6 @@
             element.bind('focus click', function() {
                 if (div) return;
 
-                var useStartTime = options.startTime;
-                if (useStartTime) {
-                    if (options.startDate && options.endDate &&
-                        !areDatesEqual(parseDate(options.startDate.val()),
-                            parseDate(options.endDate.val())))
-                        useStartTime = false;
-                }
-
                 var offset = element.position();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
@@ -426,14 +429,10 @@
                         top: offset.top + element.height() +
                             options.padding * 2
                     });
-                if (useStartTime) {
-                    div.addClass('calendricalEndTimePopup');
-                }
 
                 element.after(div); 
                 
-                var opts = {
-                    timeInterval: options.timeInterval,
+                var renderOptions = {
                     selection: element.val(),
                     selectTime: function(time) {
                         within = false;
@@ -441,16 +440,31 @@
                         div.remove();
                         div = null;
                     },
-                    isoTime: options.isoTime || false,
-                    defaultHour: (options.defaultHour != null) ?
-                                    options.defaultHour : 8
+                    isoTime:        options.isoTime || false,
+                    meridiemUpperCase: options.meridiemUpperCase || false,
+                    defaultTime:    options.defaultTime || {hour: 8, minute: 0},
+                    minTime:        options.minTime || {hour: 0, minute: 0},
+                    maxTime:        options.maxTime || {hour: 23, minute: 59},
+                    timeInterval:   options.timeInterval || 30
+                };
+                
+                if (options.startTime) {
+                    var startTime = parseTime(options.startTime.val());
+                    //Don't display duration if part of a datetime range,
+                    //and start and end times are on different days
+                    if (options.startDate && options.endDate &&
+                        !areDatesEqual(parseDate(options.startDate.val()),
+                            parseDate(options.endDate.val()))) {
+                        startTime = null;
+                    }
+                    if (startTime) {
+                        renderOptions.minTime = startTime;
+                        renderOptions.showDuration = true;
+                        div.addClass('calendricalEndTimePopup');
+                    }
                 }
                 
-                if (useStartTime) {
-                    opts.startTime = parseTime(options.startTime.val());
-                }
-                
-                renderTimeSelect(div, opts);
+                renderTimeSelect(div, renderOptions);
             }).blur(function() {
                 if (within){
                     if (div) element.focus();
