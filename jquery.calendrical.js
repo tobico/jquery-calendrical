@@ -94,7 +94,7 @@
             if (printHour == 0) printHour = 12;
 
             if (options.meridiemUpperCase) {
-            	 var half = (hour < 12) ? 'AM' : 'PM';
+                 var half = (hour < 12) ? 'AM' : 'PM';
             } else {
             	 var half = (hour < 12) ? 'am' : 'pm';
             }
@@ -322,11 +322,14 @@
     {
         options = options || {};
         options.padding = options.padding || 4;
+
+        $(this).attr('readonly', options.readonly == true ? 'readonly' : '')
         
         return this.each(function() {
             var element = $(this);
             var div;
             var within = false;
+            
             
             element.bind('focus click', function() {
                 if (div) return;
@@ -407,10 +410,14 @@
         options.timeInterval = options.timeInterval || 30;
         options.padding = options.padding || 4;
         
+        
+        
         return this.each(function() {
             var element = $(this);
             var div;
             var within = false;
+            
+            $(this).attr('readonly', options.readonly == true ? 'readonly' : '')
             
             element.bind('focus click', function() {
                 if (div) return;
