@@ -345,7 +345,7 @@
                         selected: selected,
                         selectDate: function(date) {
                             within = false;
-                            element.val(formatDate(date, options.usa));
+                            element.val(formatDate(date, options.usa)).change();
                             div.remove();
                             div = null;
                             if (options.endDate) {
@@ -434,7 +434,7 @@
                     selection: element.val(),
                     selectTime: function(time) {
                         within = false;
-                        element.val(time);
+                        element.val(time).change();
                         div.remove();
                         div = null;
                     },
