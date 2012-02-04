@@ -61,23 +61,37 @@
             new Date(year, month + 1, 1);
     }
     
-    function formatDate(date, usa)
+    function formatDate(date, options)
     {
-        return (usa ?
-            ((date.getMonth() + 1) + '/' + date.getDate()) :
-            (date.getDate() + '/' + (date.getMonth() + 1))
-        ) + '/' + date.getFullYear(); 
+        options = options || {};
+        options.separator = options.separator || '/';
+        
+        var s;
+        if (options.usa) {
+            s = (date.getMonth() + 1) + options.separator + date.getDate()
+        } else {
+            s = date.getDate() + options.separator + (date.getMonth() + 1)
+        }
+        return s + options.separator + date.getFullYear(); 
     }
     
-    function parseDate(date, usa)
+    function parseDate(date, options)
     {
-        if (usa) return new Date(date);
-        a = date.split(/[\.\-\/]/);
-        var day = a.shift();
-        var month = a.shift();
-        a.unshift(day);
-        a.unshift(month);
-        return new Date(a.join('/'));
+        options = options || {};
+        
+        var a, day, month, year;
+        a = date.split(/\D/);
+        
+        if (options.usa) {
+            month = a.shift();
+            day = a.shift();
+        } else {
+            day = a.shift();
+            month = a.shift();
+        }
+        year = a.shift();
+        
+        return new Date(month + '/' + day + '/' + year);
     }
     
     function formatTime(hour, minute, options)
@@ -347,7 +361,7 @@
                     });
                 element.after(div); 
                 
-                var selected = parseDate(element.val(), options.usa);
+                var selected = parseDate(element.val(), options);
                 if (!selected.getFullYear()) selected = getToday();
                 
                 renderCalendarPage(
@@ -357,12 +371,12 @@
                         selected: selected,
                         selectDate: function(date) {
                             within = false;
-                            element.val(formatDate(date, options.usa)).change();
+                            element.val(formatDate(date, options)).change();
                             div.remove();
                             div = null;
                             if (options.endDate) {
                                 var endDate = parseDate(
-                                    options.endDate.val(), options.usa
+                                    options.endDate.val(), options
                                 );
                                 if (endDate >= selected) {
                                     options.endDate.val(formatDate(
@@ -371,7 +385,8 @@
                                             endDate.getTime() -
                                             selected.getTime()
                                         ),
-                                        options.usa
+                                        options.usa,
+                                        options.separator
                                     ));
                                 }
                             }
@@ -454,8 +469,8 @@
                     //Don't display duration if part of a datetime range,
                     //and start and end times are on different days
                     if (options.startDate && options.endDate &&
-                        !areDatesEqual(parseDate(options.startDate.val()),
-                            parseDate(options.endDate.val()))) {
+                        !areDatesEqual(parseDate(options.startDate.val(), options),
+                            parseDate(options.endDate.val())), options) {
                         startTime = null;
                     }
                     if (startTime) {
