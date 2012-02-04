@@ -412,6 +412,7 @@
             var div;
             var within = false;
             
+            element.attr( "autocomplete", "off" );
             element.bind('focus click', function() {
                 if (div) return;
 
@@ -459,6 +460,7 @@
                     }
                     if (startTime) {
                         renderOptions.minTime = startTime;
+                        renderOptions.defaultTime = startTime;
                         renderOptions.showDuration = true;
                         div.addClass('calendricalEndTimePopup');
                     }
