@@ -29,6 +29,7 @@ All of the Calendrical functions can accept an options hash as a parameter.
 Date options:
 
   * __usa__ - Use USA-style middle endian dates (7/21/2010), instead of the default European-style little endian dates (21/7/2010).
+  * __separator__ - Symbol to use between components of the date. Default: `/`
 
 Time options:
 
