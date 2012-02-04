@@ -412,7 +412,7 @@
             var div;
             var within = false;
             
-            element.attr( "autocomplete", "off" );
+            element.attr('autocomplete', 'off');
             element.bind('focus click', function() {
                 if (div) return;
 
