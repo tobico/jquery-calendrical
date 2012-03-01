@@ -468,9 +468,10 @@
                     var startTime = parseTime(options.startTime.val());
                     //Don't display duration if part of a datetime range,
                     //and start and end times are on different days
-                    if (options.startDate && options.endDate &&
-                        !areDatesEqual(parseDate(options.startDate.val(), options),
-                            parseDate(options.endDate.val())), options) {
+                    if (options.startDate && 
+                        options.endDate && 
+                        !areDatesEqual(parseDate(options.startDate.val(), options), 
+                        parseDate(options.endDate.val(), options))) {
                         startTime = null;
                     }
                     if (startTime) {
