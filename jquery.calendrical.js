@@ -67,6 +67,11 @@
         options.separator = options.separator || '/';
         
         var s;
+        if (options.iso) {
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return date.getFullYear() + '-' + (m < 10 ? '0'+m : m) + '-' + (d < 10 ? '0'+d : d);
+        }
         if (options.usa) {
             s = (date.getMonth() + 1) + options.separator + date.getDate()
         } else {
@@ -81,15 +86,21 @@
         
         var a, day, month, year;
         a = date.split(/\D/);
-        
-        if (options.usa) {
+
+        if (options.iso) {
+            year = a.shift();
             month = a.shift();
             day = a.shift();
         } else {
-            day = a.shift();
-            month = a.shift();
+            if (options.usa) {
+                month = a.shift();
+                day = a.shift();
+            } else {
+                day = a.shift();
+                month = a.shift();
+            }
+            year = a.shift();
         }
-        year = a.shift();
         
         return new Date(month + '/' + day + '/' + year);
     }
@@ -145,6 +156,8 @@
      */
     function renderCalendarHeader(element, year, month, options)
     {
+        options = options || {};
+
         //Prepare thead element
         var thead = $('<thead />');
         var titleRow = $('<tr />').appendTo(thead);
@@ -163,9 +176,15 @@
         ).appendTo(titleRow);
         
         //Generate month title
+        var month_label;
+        if (options.iso) {
+            month_label = year + '-' + (month < 9 ? '0': '') + (month + 1);
+        } else {
+            month_label = monthNames[month] + ' ' + year;
+        }
         $('<th />').addClass('monthCell').attr('colSpan', 5).append(
-            $('<a href="javascript:;">' + monthNames[month] + ' ' +
-                year + '</a>').addClass('monthName')
+            $('<a href="javascript:;">' + month_label +
+                '</a>').addClass('monthName')
         ).appendTo(titleRow);
         
         //Generate >> (forward a month) link
@@ -331,7 +350,7 @@
         }
         element.empty().append(ul);
     }
-    
+
     $.fn.calendricalDate = function(options)
     {
         options = options || {};
@@ -367,7 +386,7 @@
                 renderCalendarPage(
                     div,
                     selected.getFullYear(),
-                    selected.getMonth(), {
+                    selected.getMonth(), $.extend({}, options, {
                         selected: selected,
                         selectDate: function(date) {
                             within = false;
@@ -385,13 +404,12 @@
                                             endDate.getTime() -
                                             selected.getTime()
                                         ),
-                                        options.usa,
-                                        options.separator
+                                        options
                                     ));
                                 }
                             }
                         }
-                    }
+                    })
                 );
             }).blur(function() {
                 if (within){
