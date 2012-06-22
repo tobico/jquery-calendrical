@@ -331,6 +331,22 @@
         }
         element.empty().append(ul);
     }
+
+    function positionCalendrical(div, element, options) {
+        if (options.positionInBody) {
+            $('body').append(div);
+            var offset = element.offset();
+        } else {
+            element.after(div);
+            var offset = element.position();
+        }
+        div.css({
+            position: 'absolute',
+            left: offset.left,
+            top: offset.top + element.height() +
+                options.padding * 2
+        });
+    }
     
     $.fn.calendricalDate = function(options)
     {
@@ -344,8 +360,6 @@
             
             element.bind('focus click', function() {
                 if (div) return;
-                var offset = element.position();
-                var padding = element.css('padding-left');
                 div = $('<div />')
                     .addClass('calendricalDatePopup')
                     .mouseenter(function() { within = true; })
@@ -353,14 +367,8 @@
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
-                    .css({
-                        position: 'absolute',
-                        left: offset.left,
-                        top: offset.top + element.height() +
-                            options.padding * 2
-                    });
-                element.after(div); 
-                
+                positionCalendrical(div, element, options);
+
                 var selected = parseDate(element.val(), options);
                 if (!selected.getFullYear()) selected = getToday();
                 
@@ -431,7 +439,6 @@
             element.bind('focus click', function() {
                 if (div) return;
 
-                var offset = element.position();
                 div = $('<div />')
                     .addClass('calendricalTimePopup')
                     .mouseenter(function() { within = true; })
@@ -439,14 +446,7 @@
                     .mousedown(function(e) {
                         e.preventDefault();
                     })
-                    .css({
-                        position: 'absolute',
-                        left: offset.left,
-                        top: offset.top + element.height() +
-                            options.padding * 2
-                    });
-
-                element.after(div); 
+                positionCalendrical(div, element, options);
                 
                 var renderOptions = {
                     selection: element.val(),
