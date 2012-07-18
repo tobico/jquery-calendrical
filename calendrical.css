@@ -63,7 +63,7 @@
         color: black;
         text-decoration: none; }
       .calendricalTimePopup ul li a:hover, .calendricalTimePopup ul li.selected a {
-        background: #ccccff; }
+        background: #D3D3D3; }
 
 .calendricalEndTimePopup {
   width: 160px; }
