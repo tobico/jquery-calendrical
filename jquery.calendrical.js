@@ -2,10 +2,18 @@
     var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
         
-    function getToday()
+    function createDate(year, month, day)
     {
         var date = new Date();
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        date.setFullYear(year);
+        date.setMonth(month || 0);
+        date.setDate(day || 1);
+        return date;
+    }
+
+    function getToday()
+    {
+        return new Date();
     }
     
     function areDatesEqual(date1, date2)
@@ -29,36 +37,17 @@
     
     function dayAfter(date)
     {
-        var year = date.getFullYear();
-        var month = date.getMonth();
-        var day = date.getDate();
-        var lastDay = daysInMonth(date);
-        return (day == lastDay) ?
-            ((month == 11) ?
-                new Date(year + 1, 0, 1) :
-                new Date(year, month + 1, 1)
-            ) :
-            new Date(year, month, day + 1);
+        return createDate(date.getFullYear(), date.getMonth(), date.getDate()+1);
     }
     
     function dayBefore(date)
     {
-        var year = date.getFullYear();
-        var month = date.getMonth();
-        var day = date.getDate();
-        return (day == 1) ?
-            ((month == 0) ?
-                new Date(year - 1, 11, daysInMonth(year - 1, 11)) :
-                new Date(year, month - 1, daysInMonth(year, month - 1))
-            ) :
-            new Date(year, month, day - 1);
+        return createDate(date.getFullYear(), date.getMonth(), date.getDate()-1);
     }
     
     function monthAfter(year, month)
     {
-        return (month == 11) ?
-            new Date(year + 1, 0, 1) :
-            new Date(year, month + 1, 1);
+        return createDate(year, month + 1);
     }
     
     function formatDate(date, options)
@@ -91,7 +80,7 @@
         }
         year = a.shift();
         
-        return new Date(year, month-1, day);
+        return createDate(year, month-1, day);
     }
     
     function formatTime(hour, minute, options)
@@ -195,7 +184,7 @@
         
         var today = getToday();
         
-        var date = new Date(year, month, 1);
+        var date = createDate(year, month, 1);
         
         //Wind end date forward to saturday week after month
         var endDate = monthAfter(year, month);
