@@ -91,7 +91,7 @@
         }
         year = a.shift();
         
-        return new Date(month + '/' + day + '/' + year);
+        return new Date(year, month-1, day);
     }
     
     function formatTime(hour, minute, options)
