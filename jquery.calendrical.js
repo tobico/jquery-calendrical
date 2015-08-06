@@ -382,8 +382,7 @@
                                             endDate.getTime() -
                                             selected.getTime()
                                         ),
-                                        options.usa,
-                                        options.separator
+                                        options
                                     ));
                                 }
                             }
