@@ -42,3 +42,4 @@ Time options:
   * __timeInterval__ - Interval in minutes between each option in a time picker. Default: 30
   * __minTime__ - The earliest time selectable. This is also the base value when calculating increments, e.g. a start time of {hour: 9, minute: 15} with the default interval of 30 will give the options (9:15, 9:45, 10:15, ...)
   * __maxTime__ - The latest time selectable. If this value does not fall on a valid interval, the last interval before this one will be the latest time selectable (i.e. {hour: 11, minute: 34} becomes 11:30)
+  * __positionInBody__ - Inserts element for calendar popups on the root body node, rather than next to the text fields. Set this to true if you're having issues with your popups being cut off by the overflow property of a parent element. 
