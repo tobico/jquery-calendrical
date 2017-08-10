@@ -8,8 +8,6 @@ Calendrical is a plugin for jQuery that provides popup date and time pickers ins
 
 Copy and include the JavaScript file `jquery.calendrical.js`, and the style sheet `calendrical.css` in your project.
 
-If you use SASS for your project, you can include the code in `calendrical.scss` instead of the css file. If you want to change the color scheme for Calendrical, you can edit the color definitions in the scss file and then regenerate the css using `build_css.sh`.
-
 ## Usage
 
 You can add Calendrical date and time pickers to your existing text fields using the following functions:
