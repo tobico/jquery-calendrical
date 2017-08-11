@@ -6,7 +6,15 @@ Calendrical is a plugin for jQuery that provides popup date and time pickers ins
 
 ## Installation
 
+### As a global
+
 Copy and include the JavaScript file `jquery.calendrical.js`, and the style sheet `calendrical.css` in your project.
+
+### Using npm/yarn
+
+```
+yarn add jquery-calendrical
+```
 
 ## Usage
 
