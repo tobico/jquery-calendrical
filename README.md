@@ -1,5 +1,7 @@
 # Calendrical
 
+[![Build Status](https://travis-ci.org/tobico/jquery-calendrical.svg?branch=master)](https://travis-ci.org/tobico/jquery-calendrical)
+
 ## What is it?
 
 Calendrical is a plugin for jQuery that provides popup date and time pickers inspired by Google Calender.
