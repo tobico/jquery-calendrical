@@ -1,0 +1,33 @@
+{
+  "name": "jquery-calendrical",
+  "version": "1.0.0",
+  "description": "Date and time widgets",
+  "main": "jquery.calendrical.js",
+  "files": [
+    "calendrical.css",
+    "jquery.calendrical.js",
+    "README.md",
+    "example.html"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobico/jquery-calendrical.git"
+  },
+  "author": "Tobias Cohen <me@tobiascohen.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobico/jquery-calendrical/issues"
+  },
+  "homepage": "https://github.com/tobico/jquery-calendrical#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^20.0.4",
+    "jquery": "^3.2.1"
+  },
+  "peerDependencies": {
+    "jquery": "^3.2.1"
+  }
+}
