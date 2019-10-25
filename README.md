@@ -4,7 +4,7 @@
 
 ## What is it?
 
-Calendrical is a plugin for jQuery that provides popup date and time pickers inspired by Google Calender.
+Calendrical is a plugin for jQuery that provides popup date and time pickers inspired by Google Calendar.
 
 ## Installation
 
